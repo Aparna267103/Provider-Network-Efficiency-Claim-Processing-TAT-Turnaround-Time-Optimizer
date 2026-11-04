@@ -1,4 +1,3 @@
-
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -57,7 +56,12 @@ df["Payment_TAT_Days"] = (
 ).dt.days
 
 # Current claim age for open claims
-reference_date = pd.Timestamp("2026-01-01")
+reference_date = pd.Timestamp.today().normalize()
+
+df["Claim_Age_Days"] = (
+    df["Decision_Date"].fillna(reference_date)
+    - df["Intake_Date"]
+).dt.days
 
 df["Claim_Age_Days"] = (
     df["Decision_Date"].fillna(reference_date)
