@@ -1,4 +1,3 @@
-
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
@@ -98,7 +97,5 @@ output_path = report_dir / "claims_forecast.csv"
 combined.to_csv(output_path, index=False)
 
 print("Saved:", output_path)
-
-combined.to_csv("claims_forecast.csv", index=False)
 
 print("Forecast completed successfully!")
