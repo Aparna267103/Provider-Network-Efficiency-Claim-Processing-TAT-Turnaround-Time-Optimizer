@@ -49,6 +49,17 @@ No real patient or personally identifiable information is used.
 6. Forecast weekly claim volumes using Exponential Smoothing.
 7. Identify operational bottlenecks and prioritize pending claims.
 
+### Run the Project
+
+From the project root, run the scripts in this order:
+
+```bash
+python src/generate_data.py
+python src/data_cleaning.py
+python src/eda_analysis.py
+python src/forecasting.py
+```
+
 ## Power BI Dashboard
 
 The interactive Power BI report is available here:
