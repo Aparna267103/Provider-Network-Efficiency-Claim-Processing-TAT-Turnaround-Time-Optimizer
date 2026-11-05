@@ -72,17 +72,6 @@ SLA_DAYS = {
 
 df["SLA_Days"] = df["Claim_Type"].map(SLA_DAYS)
 
-# SLA status
-df["SLA_Status"] = np.where(
-    df["Decision_TAT_Days"].isna(),
-    "Pending",
-    np.where(
-        df["Decision_TAT_Days"] <= df["SLA_Days"],
-        "Within SLA",
-        "Breached"
-    )
-)
-
 # Stage validation
 duration_columns = [
     "Initial_Review_Days",
@@ -94,6 +83,17 @@ duration_columns = [
 
 for col in duration_columns:
     df.loc[df[col] < 0, col] = np.nan
+
+# SLA status
+df["SLA_Status"] = np.where(
+    df["Decision_TAT_Days"].isna(),
+    "Pending",
+    np.where(
+        df["Decision_TAT_Days"] <= df["SLA_Days"],
+        "Within SLA",
+        "Breached"
+    )
+)
 
 df["Current_Pending_Age"] = np.where(
     df["Claim_Status"] == "Pending",
