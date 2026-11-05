@@ -21,6 +21,7 @@ weekly = (
     df.set_index("Intake_Date")
     .resample("W")["Claim_ID"]
     .count()
+    .asfreq("W", fill_value=0)
 )
 
 # Forecast next 8 weeks
