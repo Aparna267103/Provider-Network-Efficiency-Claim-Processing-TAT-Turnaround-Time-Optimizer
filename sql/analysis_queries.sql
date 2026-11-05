@@ -1,5 +1,5 @@
-# Query 1 – Claim Type-wise Average TAT 
-# Which claim type takes the longest time?
+-- Query 1 – Claim Type-wise Average TAT 
+-- Which claim type takes the longest time?
 
 SELECT
     Claim_Type,
@@ -16,8 +16,8 @@ GROUP BY Claim_Type
 
 ORDER BY Average_TAT DESC;
 
-# Query 2 – SLA Breach Percentage
-# What percentage of completed claims result in an SLA miss?
+-- Query 2 – SLA Breach Percentage
+-- What percentage of completed claims result in an SLA miss?
 
 SELECT
     COUNT(*) AS Completed_Claims,
@@ -43,8 +43,8 @@ FROM Claims
 
 WHERE Decision_TAT_Days IS NOT NULL;
 
-# Query 3 – Adjudicator Tier Performance
-# In which tier is the backlog the highest?
+-- Query 3 – Adjudicator Tier Performance
+-- In which tier is the backlog the highest?
 
 SELECT
     Adjudicator_Tier,
@@ -67,8 +67,8 @@ GROUP BY Adjudicator_Tier
 
 ORDER BY Pending_Claims DESC;
 
-# Query 4 – Longest Pending Claims
-# Which claims require immediate attention?
+-- Query 4 – Longest Pending Claims
+-- Which claims require immediate attention?
 
 SELECT
     Claim_ID,
@@ -86,8 +86,8 @@ WHERE Claim_Status = 'Pending'
 
 ORDER BY Pending_Days DESC;
 
-# Query 5 – Monthly Claim Trend
-# SQL Server syntax for Query 5. If using SQLite, you should use `strftime('%Y-%m', Intake_Date)`.
+-- Query 5 – Monthly Claim Trend
+-- SQL Server syntax for Query 5. If using SQLite, you should use `strftime('%Y-%m', Intake_Date)`.
 
 SELECT
     FORMAT(Intake_Date, 'yyyy-MM') AS Claim_Month,
