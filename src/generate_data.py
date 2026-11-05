@@ -1,4 +1,3 @@
-
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -8,6 +7,13 @@ np.random.seed(42)
 
 # Number of claims
 N = 3000
+
+# Fixed date range for reproducible synthetic data
+START_DATE = pd.Timestamp("2026-01-01")
+END_DATE = pd.Timestamp("2026-11-05")
+
+today = END_DATE
+period_start = START_DATE
 
 # Project folders
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -63,8 +69,16 @@ for i in range(N):
         "Tier 3": 5
     }
 
-    intake = pd.Timestamp("2025-01-01") + pd.Timedelta(
-        days=np.random.randint(0, 365)
+    if status == "Pending":
+        earliest_intake = max(period_start, today - pd.Timedelta(days=75))
+        latest_intake = today - pd.Timedelta(days=23)
+    else:
+        earliest_intake = period_start
+        latest_intake = today - pd.Timedelta(days=58)
+
+    intake_days = (latest_intake - earliest_intake).days
+    intake = earliest_intake + pd.Timedelta(
+        days=np.random.randint(0, intake_days + 1)
     )
 
     initial_review = intake + pd.Timedelta(
