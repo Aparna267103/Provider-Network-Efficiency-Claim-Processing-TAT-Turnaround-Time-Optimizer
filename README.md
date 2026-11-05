@@ -20,7 +20,7 @@ The solution integrates Python, SQL, and Power BI to transform synthetic healthc
 ## Tools & Technologies
 
 - **Python:** Data generation, cleaning, exploratory analysis, and forecasting.
-- **SQL:** Data querying and analytical transformations.
+- **SQL (SQLite):** Data querying and analytical transformations.
 - **Power BI:** Interactive dashboards and KPI reporting.
 - **Pandas & NumPy:** Data manipulation and processing.
 - **Statsmodels:** Exponential Smoothing forecasting.
@@ -30,7 +30,8 @@ The solution integrates Python, SQL, and Power BI to transform synthetic healthc
 
 This project uses a synthetic healthcare insurance claims dataset containing 3,000 records.
 
-- **Date Range:** January 1, 2026 – November 5, 2026.
+- **Intake Date Range:** January 1, 2026 – October 13, 2026.
+- **Reference Date for Pending Claim Age:** November 5, 2026.
 - **Claim Types:** Inpatient, Outpatient, and Pharmacy.
 - **Adjudicator Tiers:** Tier 1, Tier 2, and Tier 3.
 - **Claim Statuses:** Approved, Denied, and Pending.

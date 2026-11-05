@@ -78,19 +78,18 @@ SELECT
     Intake_Date,
     Claim_Status,
     Decision_TAT_Days,
-    Pending_Days
+    Current_Pending_Age
 
 FROM Claims
 
 WHERE Claim_Status = 'Pending'
 
-ORDER BY Pending_Days DESC;
+ORDER BY Current_Pending_Age DESC;
 
 -- Query 5 – Monthly Claim Trend
--- SQL Server syntax for Query 5. If using SQLite, you should use `strftime('%Y-%m', Intake_Date)`.
 
 SELECT
-    FORMAT(Intake_Date, 'yyyy-MM') AS Claim_Month,
+    strftime('%Y-%m', Intake_Date) AS Claim_Month,
 
     COUNT(*) AS Total_Claims,
 
@@ -100,6 +99,6 @@ SELECT
 
 FROM Claims
 
-GROUP BY FORMAT(Intake_Date, 'yyyy-MM')
+GROUP BY strftime('%Y-%m', Intake_Date)
 
 ORDER BY Claim_Month;
