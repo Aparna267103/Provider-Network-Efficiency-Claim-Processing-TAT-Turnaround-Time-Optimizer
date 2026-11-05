@@ -56,12 +56,7 @@ df["Payment_TAT_Days"] = (
 ).dt.days
 
 # Current claim age for open claims
-reference_date = pd.Timestamp.today().normalize()
-
-df["Claim_Age_Days"] = (
-    df["Decision_Date"].fillna(reference_date)
-    - df["Intake_Date"]
-).dt.days
+reference_date = pd.Timestamp("2026-11-05")
 
 df["Claim_Age_Days"] = (
     df["Decision_Date"].fillna(reference_date)
@@ -99,10 +94,6 @@ duration_columns = [
 
 for col in duration_columns:
     df.loc[df[col] < 0, col] = np.nan
-
-
-# Current pending age
-reference_date = pd.Timestamp.today().normalize()
 
 df["Current_Pending_Age"] = np.where(
     df["Claim_Status"] == "Pending",
