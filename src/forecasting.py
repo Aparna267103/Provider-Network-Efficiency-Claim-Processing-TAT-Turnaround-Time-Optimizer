@@ -1,9 +1,11 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
 BASE_DIR = Path(__file__).resolve().parents[1]
+FORECAST_HORIZON = 8
 
 file_path = BASE_DIR / "data" / "processed" / "claims_enriched.csv"
 
@@ -24,16 +26,53 @@ weekly = (
     .asfreq("W", fill_value=0)
 )
 
-# Forecast next 8 weeks
+
+if len(weekly) <= FORECAST_HORIZON:
+    raise ValueError(
+        f"At least {FORECAST_HORIZON + 1} weekly observations are required "
+        "to evaluate the forecast."
+    )
+
+# Evaluate on the last eight observed weeks without training on those weeks.
+train = weekly.iloc[:-FORECAST_HORIZON]
+test = weekly.iloc[-FORECAST_HORIZON:]
+
+evaluation_model = ExponentialSmoothing(
+    train,
+    trend="add",
+    seasonal=None
+)
+
+evaluation_fit = evaluation_model.fit()
+evaluation_forecast = evaluation_fit.forecast(len(test))
+
+mae = mean_absolute_error(test, evaluation_forecast)
+rmse = mean_squared_error(test, evaluation_forecast) ** 0.5
+
+metrics = pd.DataFrame([{
+    "Evaluation_Weeks": len(test),
+    "Training_Weeks": len(train),
+    "MAE": mae,
+    "RMSE": rmse
+}])
+metrics_path = report_dir / "forecast_metrics.csv"
+metrics.to_csv(metrics_path, index=False)
+
+print("FORECAST HOLDOUT EVALUATION")
+print(f"Training weeks: {len(train)}")
+print(f"Evaluation weeks: {len(test)}")
+print(f"MAE: {mae:.2f} claims")
+print(f"RMSE: {rmse:.2f} claims")
+print("Saved:", metrics_path)
+
+# Refit on all observations before forecasting the next eight weeks.
 model = ExponentialSmoothing(
     weekly,
     trend="add",
     seasonal=None
 )
-
 fitted_model = model.fit()
-
-forecast = fitted_model.forecast(8)
+forecast = fitted_model.forecast(FORECAST_HORIZON)
 
 print("NEXT 8 WEEKS CLAIM FORECAST")
 

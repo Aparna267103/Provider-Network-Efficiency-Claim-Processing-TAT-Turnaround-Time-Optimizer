@@ -3,6 +3,7 @@ import numpy as np
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parents[1]
+REFERENCE_DATE = pd.Timestamp("2026-11-05")
 
 input_file = BASE_DIR / "data" / "raw" / "claims_data.csv"
 
@@ -55,11 +56,9 @@ df["Payment_TAT_Days"] = (
     df["Payment_Date"] - df["Intake_Date"]
 ).dt.days
 
-# Current claim age for open claims
-reference_date = pd.Timestamp("2026-11-05")
-
+# Claim age calculations use a fixed date to keep results reproducible.
 df["Claim_Age_Days"] = (
-    df["Decision_Date"].fillna(reference_date)
+    df["Decision_Date"].fillna(REFERENCE_DATE)
     - df["Intake_Date"]
 ).dt.days
 
@@ -97,7 +96,7 @@ df["SLA_Status"] = np.where(
 
 df["Current_Pending_Age"] = np.where(
     df["Claim_Status"] == "Pending",
-    (reference_date - df["Pend_Start_Date"]).dt.days,
+    (REFERENCE_DATE - df["Pend_Start_Date"]).dt.days,
     np.nan
 )
 

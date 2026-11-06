@@ -38,6 +38,13 @@ This project uses a synthetic healthcare insurance claims dataset containing 3,0
 
 The dataset is generated using Python with a fixed random seed and reference date to support reproducible analysis.
 
+- Claim type mix: Inpatient 35%, Outpatient 40%, Pharmacy 25%.
+- Adjudicator tier mix: Tier 1 50%, Tier 2 30%, Tier 3 20%.
+- Claim status mix: Approved 65%, Denied 25%, Pending 10%.
+- Claim amount ranges: Inpatient 30,000–299,999; Outpatient 1,000–49,999; Pharmacy 500–14,999.
+- Pending claim and open-claim ages use the fixed reference date November 5, 2026.
+- `Claim_Age_Days` is measured from intake; `Current_Pending_Age` is measured from the pending-start date.
+
 No real patient or personally identifiable information is used.
 
 ## Project Workflow
@@ -52,9 +59,17 @@ No real patient or personally identifiable information is used.
 
 ### Run the Project
 
-From the project root, run the scripts in this order:
+From the project root, create and activate a virtual environment and install dependencies:
 
-```bash
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+Then run the scripts in this order:
+
+```powershell
 python src/generate_data.py
 python src/data_cleaning.py
 python src/eda_analysis.py
@@ -110,7 +125,11 @@ Weekly claim volumes are calculated using historical claim intake dates.
 
 The Exponential Smoothing model from Statsmodels is used to forecast claim volumes for the next eight weeks.
 
-Historical actual values and future predicted values are combined into a forecast dataset for Power BI visualization.
+Forecast performance is evaluated chronologically: the final eight observed weeks are held out, the model is fit on the earlier weeks, and Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE) are calculated. The model is then refit on all observed weeks to forecast the next eight weeks.
+
+Evaluation metrics are saved to `reports/forecast_metrics.csv`. Historical actual values and future predicted values are saved to `reports/claims_forecast.csv` for Power BI visualization.
+
+On the current generated dataset, the eight-week holdout evaluation reports MAE of 37.45 claims and RMSE of 39.63 claims. Treat the forecast as a demonstration: its holdout error is high relative to weekly claim volume.
 
 ## Key Business Outcomes
 
