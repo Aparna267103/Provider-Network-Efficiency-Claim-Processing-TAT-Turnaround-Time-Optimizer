@@ -1,2 +1,3 @@
-Evaluation_Weeks,Training_Weeks,MAE,RMSE
-8,34,37.45040300289366,39.627214910734146
+Model,Evaluation_Weeks,Training_Weeks,MAE_Claims_Per_Week,RMSE_Claims_Per_Week
+Exponential Smoothing,8,34,37.45040300289366,39.627214910734146
+Naive (last training week),8,34,35.125,36.9780340202126

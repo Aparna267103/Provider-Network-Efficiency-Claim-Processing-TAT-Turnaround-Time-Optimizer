@@ -125,11 +125,18 @@ Weekly claim volumes are calculated using historical claim intake dates.
 
 The Exponential Smoothing model from Statsmodels is used to forecast claim volumes for the next eight weeks.
 
-Forecast performance is evaluated chronologically: the final eight observed weeks are held out, the model is fit on the earlier weeks, and Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE) are calculated. The model is then refit on all observed weeks to forecast the next eight weeks.
+Forecast performance is evaluated chronologically: the final eight observed weeks are held out, and both Exponential Smoothing and a naive baseline (repeating the last training week's volume) are evaluated on those same weeks. MAE and RMSE are measured in **claims per week**. The Exponential Smoothing model is then refit on all observed weeks to forecast the next eight weeks.
 
-Evaluation metrics are saved to `reports/forecast_metrics.csv`. Historical actual values and future predicted values are saved to `reports/claims_forecast.csv` for Power BI visualization.
+Evaluation metrics for both models are saved to `reports/forecast_metrics.csv`. Historical actual values and future predicted values are saved to `reports/claims_forecast.csv` for Power BI visualization. Lower MAE and RMSE indicate better holdout accuracy; compare the two models' errors to assess whether Exponential Smoothing improves on the baseline.
 
-On the current generated dataset, the eight-week holdout evaluation reports MAE of 37.45 claims and RMSE of 39.63 claims. Treat the forecast as a demonstration: its holdout error is high relative to weekly claim volume.
+On the current generated dataset, the eight-week holdout results are:
+
+| Model | MAE (claims per week) | RMSE (claims per week) |
+|---|---:|---:|
+| Exponential Smoothing | 37.45 | 39.63 |
+| Naive (last training week) | 35.12 | 36.98 |
+
+The naive baseline performs better on this holdout, so Exponential Smoothing does not improve accuracy for this dataset and forecast setup.
 
 ## Key Business Outcomes
 

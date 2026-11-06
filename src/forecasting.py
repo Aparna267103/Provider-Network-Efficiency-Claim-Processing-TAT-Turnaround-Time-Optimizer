@@ -46,23 +46,50 @@ evaluation_model = ExponentialSmoothing(
 evaluation_fit = evaluation_model.fit()
 evaluation_forecast = evaluation_fit.forecast(len(test))
 
-mae = mean_absolute_error(test, evaluation_forecast)
-rmse = mean_squared_error(test, evaluation_forecast) ** 0.5
+baseline_forecast = pd.Series(
+    train.iloc[-1],
+    index=test.index
+)
 
-metrics = pd.DataFrame([{
-    "Evaluation_Weeks": len(test),
-    "Training_Weeks": len(train),
-    "MAE": mae,
-    "RMSE": rmse
-}])
+metrics = pd.DataFrame([
+    {
+        "Model": "Exponential Smoothing",
+        "Evaluation_Weeks": len(test),
+        "Training_Weeks": len(train),
+        "MAE_Claims_Per_Week": mean_absolute_error(
+            test,
+            evaluation_forecast
+        ),
+        "RMSE_Claims_Per_Week": mean_squared_error(
+            test,
+            evaluation_forecast
+        ) ** 0.5
+    },
+    {
+        "Model": "Naive (last training week)",
+        "Evaluation_Weeks": len(test),
+        "Training_Weeks": len(train),
+        "MAE_Claims_Per_Week": mean_absolute_error(
+            test,
+            baseline_forecast
+        ),
+        "RMSE_Claims_Per_Week": mean_squared_error(
+            test,
+            baseline_forecast
+        ) ** 0.5
+    }
+])
 metrics_path = report_dir / "forecast_metrics.csv"
 metrics.to_csv(metrics_path, index=False)
 
 print("FORECAST HOLDOUT EVALUATION")
 print(f"Training weeks: {len(train)}")
 print(f"Evaluation weeks: {len(test)}")
-print(f"MAE: {mae:.2f} claims")
-print(f"RMSE: {rmse:.2f} claims")
+for row in metrics.itertuples(index=False):
+    print(
+        f"{row.Model}: MAE={row.MAE_Claims_Per_Week:.2f}, "
+        f"RMSE={row.RMSE_Claims_Per_Week:.2f} claims per week"
+    )
 print("Saved:", metrics_path)
 
 # Refit on all observations before forecasting the next eight weeks.
